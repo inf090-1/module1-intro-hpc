@@ -21,7 +21,6 @@ Use the table below as the entry point into each guide.
 | [2-lmod-modules](2-lmod-modules/README.md) | Loading and managing software with the Lmod module system. |
 | [3-slurm-basics](3-slurm-basics/README.md) | Checking partitions with `sinfo`, running simple programs with `srun`, and submitting jobs with `sbatch`. |
 | [4-slurm-amdahl](4-slurm-amdahl/README.md) | Running the Amdahl's Law example with Slurm and analyzing speedup. |
-| [5-filesystem](5-filesystem/README.md) | How `$HOME`, `$SCRATCH`, and node-local `/tmp` behave on the headnode and compute nodes. |
 
 ## Recommended Path
 
