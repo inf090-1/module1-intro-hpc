@@ -1,10 +1,10 @@
 # Assessing latency and bandwidth performance with OSU microbenchmarks
 
-In the [previous day](../01-hpc-intro/README.md) you learned the basics for accessing a cluster, transferring files, and running simple MPI programs. In this guide, we will use all the skills you learned to assess the communication performance of a cluster using the [OSU MicroBenchmarks Suite](https://mvapich.cse.ohio-state.edu/benchmarks/). These benchmarks are widely used in HPC to measure latency and bandwidth of MPI communication.
+In the [previous day](../../01-hpc-intro/README.md) you learned the basics for accessing a cluster, transferring files, and running simple MPI programs. In this guide, we will use all the skills you learned to assess the communication performance of a cluster using the [OSU MicroBenchmarks Suite](https://mvapich.cse.ohio-state.edu/benchmarks/). These benchmarks are widely used in HPC to measure latency and bandwidth of MPI communication.
 
 ## Preliminaries
 - Log in to the INFO090 cluster
-- Complete the [01-hpc-intro](../01-hpc-intro/README.md) guides to understand the basics of cluster access, file transfer, and job submission.
+- Complete the [01-hpc-intro](../../01-hpc-intro/README.md) guides to understand the basics of cluster access, file transfer, and job submission.
 
 
 ## 1. Verify binaries and environment
