@@ -50,8 +50,8 @@ source amdahl-env/bin/activate
 # Run 3 times and collect output
 echo "=== Amdahl run with RANKS_PLACEHOLDER ranks ===" > "RESULTS_DIR_PLACEHOLDER/amdahl_RANKS_PLACEHOLDER.txt"
 for run in 1 2 3; do
-    echo "Run $run:" >> "RESULTS_DIR_PLACEHOLDER/amdahl_RANKS_PLACEHOLDER.txt"
-    mpirun amdahl >> "RESULTS_DIR_PLACEHOLDER/amdahl_RANKS_PLACEHOLDER.txt" 2>&1
+    echo "Run $run:" > "RESULTS_DIR_PLACEHOLDER/amdahl_RANKS_PLACEHOLDER.txt"
+    mpirun amdahl > "RESULTS_DIR_PLACEHOLDER/amdahl_RANKS_PLACEHOLDER.txt" 2>&1
 done
 SLURMEOF
 

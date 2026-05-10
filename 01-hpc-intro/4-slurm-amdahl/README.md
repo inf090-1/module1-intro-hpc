@@ -82,27 +82,27 @@ sbatch run_amdahl_serial.sh
 Check job status:
 
 ```bash
-squeue -u $USER
+squeue --me
 ```
 
 ### 2.3 Review the output
 
-Once the job completes, check the output file (e.g., `amdahl-serial-%j.out`):
+Once the job completes, check the output file (e.g., `amdahl-serial.out`):
 
 ```bash
-cat amdahl-serial-%j.out
+cat amdahl-serial.out
 ```
 
 You should see output like:
 
-```
+```txt
 Doing 30.000000 seconds of 'work' on 1 processor,
  which should take 30.000000 seconds with 0.800000 parallel proportion of the workload.
 
-  Hello, World! I am process 0 of 1 on node-1.novalocal. I will do all the serial 'work' for 6.473856 seconds.
-  Hello, World! I am process 0 of 1 on node-1.novalocal. I will do parallel 'work' for 24.609087 seconds.
+  Hello, World! I am process 0 of 1 on node-1.novalocal. I will do all the serial 'work' for 6.859674 seconds.
+  Hello, World! I am process 0 of 1 on node-1.novalocal. I will do parallel 'work' for 28.613068 seconds.
 
-Total execution time (according to rank 0): 31.154722 seconds
+Total execution time (according to rank 0): 35.508335 seconds
 ```
 
 **Key observations:**
@@ -125,13 +125,16 @@ Create `run_amdahl_parallel_2.sh`:
 #SBATCH -p cpu
 #SBATCH -n 2
 #SBATCH --time=00:05:00
-#SBATCH -o amdahl-parallel-2-%j.out
+#SBATCH -o amdahl-parallel-2.out
 
+# Load modules
 module load python/3.13.1
 module load mpich
 
+# Activate our virtualenv
 source amdahl-env/bin/activate
 
+# Run amhdahl with 2 cores (inherit slurm config)
 mpirun amdahl
 ```
 
@@ -143,11 +146,11 @@ sbatch run_amdahl_parallel_2.sh
 
 Expected output will include:
 
-```
-Total execution time (according to rank 0): 18.480209 seconds
+```txt
+Total execution time (according to rank 0): 20.423892 seconds
 ```
 
-Notice the time dropped from ~30s (1 rank) to ~18s (2 ranks) — a speedup of ~1.6×.
+Notice the time dropped from ~30s (1 rank) to ~20s (2 ranks) — a speedup of ~1.5×.
 
 ### 3.2 Parallel with 4 and 8 ranks
 
@@ -162,10 +165,8 @@ sbatch run_amdahl_parallel_8.sh
 ```
 
 **Observations:**
-- With 4 ranks: execution time decreases further, but speedup is less than 4× (limited by serial work).
+- With 4 ranks: execution time decreases further, but speedup is less than 4x (limited by serial work).
 - With 8 ranks: speedup continues to diminish, approaching the theoretical Amdahl's Law limit.
-
----
 
 ## 4. Automated Sweep and Plot
 
@@ -201,7 +202,7 @@ This will:
 Monitor job progress with:
 
 ```bash
-squeue -u $USER
+squeue --me
 ```
 
 ### 4.4 Parse outputs and generate plot
@@ -229,16 +230,13 @@ The summary table will show something like:
 
 ```txt
 ============================================================
-Speedup Summary
-============================================================
 Ranks    Time (s)     Empirical    Theoretical  Ideal   
 ------------------------------------------------------------
-1        31.8523      1.000        1.000        1.000   
-2        20.1169      1.583        1.667        2.000   
-4        13.4386      2.370        2.500        4.000   
-8        9.5143       3.348        3.333        8.000   
+1        33.4190      1.000        1.000        1.000   
+2        20.3490      1.642        1.667        2.000   
+4        12.2822      2.721        2.500        4.000   
+8        9.8324       3.399        3.333        8.000   
 ============================================================
-
 ```
 
 ### 4.5 Interpreting the results
@@ -251,6 +249,6 @@ The generated plot shows three curves:
 
 **Key insights:**
 - The empirical curve typically tracks the Amdahl's Law prediction, confirming the theory.
-- Speedup plateaus as the serial portion dominates; increasing cores beyond ~4–8 shows diminishing returns.
+- Speedup plateaus as the serial portion dominates; increasing cores beyond ~4-8 shows diminishing returns.
 - The gap between empirical and ideal illustrates the cost of serialization.
 
