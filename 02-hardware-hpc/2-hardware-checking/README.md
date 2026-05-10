@@ -162,18 +162,7 @@ top
 
 You will see a screen with:
 
-```
-top - 14:32:45 up 45 days, 3:21,  2 users,  load average: 1.23, 0.95, 0.87
-Tasks: 128 total,   2 running, 126 sleeping,   0 stopped,   0 zombie
-%Cpu(s):  8.2 us,  2.1 sy,  0.0 ni, 89.5 id,  0.1 wa,  0.0 hi,  0.1 si,  0.0 st
-MiB Mem :  515987.0 total,  320145.2 free,  120456.1 used,   75385.7 buff/cache
-MiB Swap:   16384.0 total,   16384.0 free,       0.0 used.  369234.5 avail Mem
-
-   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
-  1234 user1     20   0 4567890 123456   5678 R 45.2 24.0  10:45.23 python
-  5678 user2     20   0 2345678  98765   4321 R 32.1 19.2   8:23.45 training_job
-  ...
-```
+![top](imgs/top.png)
 
 ### Interpreting the output
 
@@ -203,6 +192,16 @@ Inside `top`, you can press:
 ### Exit top
 
 Press `q` to quit.
+
+
+### Practice
+
+Now, create an interactive job and execute `top` inside:
+
+```bash
+srun --pty bash
+top
+```
 
 ## 4. Interactive Process Monitor with `htop`
 
@@ -256,7 +255,6 @@ nvtop
 
 You will see GPU utilization, memory, and temperature in real time:
 
-
 ![nvtop](imgs/nvtop.png)
 
 ### Interpreting the output
@@ -299,7 +297,6 @@ To see the current status of all GPUs on a node:
 
 ```bash
 amd-smi
-
 ```
 
 You will see an output similar to this:
@@ -314,7 +311,6 @@ You will see an output similar to this:
 | 0000:00:08.0     |          | AMD Instinct MI300X | 0 % | 42 °C  | 0   |         134/750 W |
 |    0 |         0 |        4 |       SPX/NPS1 | 0 %     | N/A     |     |     283/196592 MB |
 +------+-----------+----------+----------------+---------+---------+-----+-------------------+
-
 ```
 
 ### Interpreting the output

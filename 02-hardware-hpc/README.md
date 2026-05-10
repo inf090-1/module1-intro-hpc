@@ -1,9 +1,13 @@
-# Hardware (HPC) — Overview
+# Day 2: HPC Hardware and Performance
 
-This folder contains short, practical guides and examples to inspect and benchmark hardware on HPC systems. Use these documents to discover CPU, memory, GPU, and network characteristics of login and compute nodes, and to learn simple monitoring and interactive workflows.
+This folder contains the second set of hands-on guides for working on the HPC cluster. The focus here is on understanding where your data lives, what hardware is available on the nodes you use, and how to measure communication performance with MPI microbenchmarks.
 
-Contents
+## Contents
 
-- [1-filesystem](1-filesystem/README.md): Quick checks for your `HOME` and `SCRATCH` spaces, and how to verify filesystem layout both on the head/login node and on allocated compute nodes.
-- [2-hardware-checking](2-hardware-checking/README.md): Commands and examples to inspect CPUs, PCI devices, and GPUs (`lscpu`, `lspci`, `nvidia-smi`, `amd-smi`, `nvtop`), plus brief `tmux`/interactive usage for live inspection.
-- [3-osu-example](3-osu-example/README.md): MPI microbenchmarks (OSU) for measuring interconnect bandwidth and latency with example scripts and aggregation tools.
+- [1-filesystem](1-filesystem/README.md): Learn where to store code, scratch data, and temporary files; compare the filesystem layout on the login node and on compute nodes; and see why `$HOME`, `$SCRATCH`, and `/tmp` behave differently.
+- [2-hardware-checking](2-hardware-checking/README.md): Inspect CPU, PCI, and GPU information with tools such as `lscpu`, `lspci`, `top`, `htop`, `nvtop`, `amd-smi`, and `nvidia-smi`, and use interactive jobs to check hardware on a live compute node.
+- [3-osu-example](3-osu-example/README.md): Run OSU microbenchmarks to measure latency and bandwidth, and plot the results with a Python script.
+
+## Suggested Path
+
+If you are following the module in order, start with the filesystem guide, then move to hardware inspection, and finish with the OSU benchmark example. That sequence gives you the practical context you need before analyzing communication performance.

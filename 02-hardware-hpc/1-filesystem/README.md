@@ -22,7 +22,7 @@ This is the workhorse of the cluster. It is built using parallel, high-speed sto
 * **Best for:** Active job inputs, massive datasets, machine learning training data, and job output files.
 * **Warning:** Scratch is **never backed up**. Furthermore, most HPCs have an automated purge policy (e.g., files older than 30 days are automatically deleted). Once your job is done, move the important results back to your Home or Project folder.
 
-### Local Node Storage (`/tmp`)**
+### Local Node Storage (`/tmp`)
 Compute nodes often have a small, physical hard drive (usually an SSD) installed directly inside them.
 
 * **Best for:** Extremely temporary files that your program needs to read/write millions of times per second.
@@ -85,7 +85,7 @@ You’ll notice that `/home` and `/scratch` aren't the only travelers on the net
 
 #### The View from the Headnode
 
-If you exit your interactive job and run `df -h` on the **headnode**, the output changes significantly. On the headnode, these aren't "network mounts"—they are local partitions. You won't see the `headnode:` prefix because the headnode *is* the source. It "exports" these directories to the rest of the cluster so that no matter where your code runs, it feels like you never left home.
+If you exit your interactive job and run `df -h` on the **headnode**, the output changes significantly. On the headnode, these aren't "network mounts", they are local partitions. You won't see the `headnode:` prefix because the headnode *is* the source. It "exports" these directories to the rest of the cluster so that no matter where your code runs, it feels like you never left home.
 
 ```
 Filesystem      Size  Used Avail Use% Mounted on
@@ -102,7 +102,7 @@ tmpfs           768M  4.0K  768M   1% /run/user/1000
 
 #### What about the `/tmp` folder?
 
-You might have noticed that `/tmp` does not appear as a separate line in your `df -h` output. This is because, on this cluster, `/tmp` is not its own unique storage device—it is simply a folder living inside the local **Root (/)** partition of the node.
+You might have noticed that `/tmp` does not appear as a separate line in your `df -h` output. This is because, on this cluster, `/tmp` is not its own unique storage device, it is simply a folder living inside the local **Root (/)** partition of the node.
 
 Unlike `$HOME` or `$SCRATCH`, which are shared across the network, `/tmp` is **node-local**. This means every machine has its own private version of `/tmp`. You can verify this by comparing the contents of the headnode's temporary folder with a compute node's folder:
 
@@ -113,7 +113,6 @@ ls /tmp
 ## List /tmp files on a compute node
 srun ls /tmp
 ```
-
 Node-local storage is incredibly fast because the data doesn't have to travel over the network cables. However, it is **ephemeral**.
 
 ## The Golden Rules of HPC Storage
@@ -121,7 +120,7 @@ Node-local storage is incredibly fast because the data doesn't have to travel ov
 Managing files on a cluster isn't just about organization—it’s about performance. Following these rules ensures your jobs run faster and you don't accidentally lose weeks of work.
 
 * **Code in `$HOME`, Data in `$SCRATCH`**: Think of `$HOME` as your safe, permanent library and `$SCRATCH` as your high-speed workshop. Always compile your code and keep your scripts in `$HOME`, but point your simulation's large input and output paths to `$SCRATCH`.
-* **Treat `/tmp` as a "Disposable Workspace"**: Use the local `/tmp` directory for high-speed, temporary files that your program needs to "write and discard" quickly.
+* **Treat `/tmp` as a "Short-lived Workspace"**: Use the local `/tmp` directory for high-speed, temporary files that your program needs to "write and discard" quickly.
   * **Warning:** Always copy any important results from `/tmp` to `$SCRATCH` before your script finishes. Once the job ends, that node's local storage is cleared, and your data is gone forever.
 * **Avoid the "Small File Problem"**: Parallel filesystems (like those powering `$SCRATCH`) are designed for massive throughput, not high-frequency "metadata" checks. Reading one 10GB file is significantly faster than reading 10,000 files that are 1MB each.
-* **Scratch is Not a Backup**: If your results are in `$SCRATCH`, assume they are at risk. Between automated "purge" policies (which delete old files to make room for others) and the lack of backups, `$SCRATCH` is for *work in progress* only.
+* **Scratch is not a Backup**: If your results are in `$SCRATCH`, assume they are at risk. Between automated "purge" policies (which delete old files to make room for others) and the lack of backups, `$SCRATCH` is for *work in progress* only.

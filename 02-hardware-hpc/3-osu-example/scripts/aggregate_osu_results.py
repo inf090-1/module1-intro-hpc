@@ -60,14 +60,12 @@ def main():
     args = parser.parse_args()
     
     configs = [
-        ('single_node_latency_trial*.txt', 'Single-Node'),
-        ('multinode_eth_latency_trial*.txt', 'Multi-Node Ethernet'),
+        ('osu_latency_trial*.txt', 'Latency'),
     ]
     
     if args.type == 'bw':
         configs = [
-            ('single_node_bw_trial*.txt', 'Single-Node'),
-            ('multinode_eth_bw_trial*.txt', 'Multi-Node Ethernet'),
+            ('osu_bw_trial*.txt', 'Bandwidth'),
         ]
     
     results_dir = Path(args.results_dir)
@@ -98,7 +96,7 @@ def main():
     plt.xscale('log', base=2)
     plt.xlabel('Message Size (bytes)')
     plt.ylabel(ylabel)
-    plt.title(f'OSU Benchmark: {ylabel} across Configurations (Mean ± Min/Max)')
+    plt.title(f'OSU {'Latency' if args.type == 'latency' else 'Bandwidth'} Benchmark (Mean ± Min/Max)')
     plt.legend()
     plt.grid(True, which='both', ls='--', lw=0.5)
     plt.tight_layout()
