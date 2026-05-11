@@ -13,4 +13,4 @@ This module introduces the foundational concepts and daily workflows of High-Per
 **Lesson Overview**
 
 - [01-hpc-intro](01-hpc-intro/README.md): cluster architecture, shell basics, filesystem layout, and Slurm/Amdahl examples.
-- [02-osu-example](02-hardware-hpc/README.md): running OSU micro-benchmarks; latency/bandwidth experiments and result aggregation.
+- [02-hardware-hpc](02-hardware-hpc/README.md): running OSU micro-benchmarks; latency/bandwidth experiments and result aggregation.
