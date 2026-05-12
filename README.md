@@ -14,3 +14,4 @@ This module introduces the foundational concepts and daily workflows of High-Per
 
 - [01-hpc-intro](01-hpc-intro/README.md): cluster architecture, shell basics, filesystem layout, and Slurm/Amdahl examples.
 - [02-hardware-hpc](02-hardware-hpc/README.md): running OSU micro-benchmarks; latency/bandwidth experiments and result aggregation.
+- [03-software-stack](03-software-stack/README.md): software stacks, Spack basics, and creating local Spack packages.
