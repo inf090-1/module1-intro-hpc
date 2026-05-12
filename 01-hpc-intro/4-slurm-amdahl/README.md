@@ -61,7 +61,7 @@ Save the following as `run_amdahl_serial.sh`:
 #SBATCH -p cpu
 #SBATCH -n 1
 #SBATCH --time=00:05:00
-#SBATCH -o amdahl-serial-%j.out
+#SBATCH -o amdahl-serial.out
 
 module load python/3.13.1
 module load mpich
