@@ -195,7 +195,7 @@ gmake@4.4.1
 
 Or, if you want to see as a full dependency graph:
 ```bash
-spack graph hdf5
+spack graph gmake
 ```
 
 ```txt

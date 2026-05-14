@@ -1,0 +1,111 @@
+BootStrap: docker
+From: ubuntu:22.04
+%post
+    . /.singularity.d/env/10-docker*.sh
+
+# GNU compiler
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        g++ \
+        gcc \
+        gfortran
+    rm -rf /var/lib/apt/lists/*
+
+# Mellanox OFED version 24.10-3.2.5.0
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ca-certificates \
+        gnupg \
+        wget
+    rm -rf /var/lib/apt/lists/*
+%post
+    wget -qO - https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox | apt-key add -
+    mkdir -p /etc/apt/sources.list.d && wget -q -nc --no-check-certificate -P /etc/apt/sources.list.d https://linux.mellanox.com/public/repo/mlnx_ofed/24.10-3.2.5.0/ubuntu22.04/mellanox_mlnx_ofed.list
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ibverbs-providers \
+        ibverbs-utils \
+        libibmad-dev \
+        libibmad5 \
+        libibumad-dev \
+        libibumad3 \
+        libibverbs-dev \
+        libibverbs1 \
+        librdmacm-dev \
+        librdmacm1
+    rm -rf /var/lib/apt/lists/*
+
+# UCX version 1.15.0
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        binutils-dev \
+        file \
+        libnuma-dev \
+        make \
+        wget
+    rm -rf /var/lib/apt/lists/*
+%post
+    cd /
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://github.com/openucx/ucx/releases/download/v1.15.0/ucx-1.15.0.tar.gz
+    mkdir -p /var/tmp && tar -x -f /var/tmp/ucx-1.15.0.tar.gz -C /var/tmp -z
+    cd /var/tmp/ucx-1.15.0 &&   ./configure --prefix=/usr/local/ucx --disable-assertions --disable-debug --disable-doxygen-doc --disable-logging --disable-params-check --enable-optimizations --without-cuda
+    make -j$(nproc)
+    make -j$(nproc) install
+    rm -rf /var/tmp/ucx-1.15.0 /var/tmp/ucx-1.15.0.tar.gz
+%environment
+    export CPATH=/usr/local/ucx/include:$CPATH
+    export LD_LIBRARY_PATH=/usr/local/ucx/lib:$LD_LIBRARY_PATH
+    export LIBRARY_PATH=/usr/local/ucx/lib:$LIBRARY_PATH
+    export PATH=/usr/local/ucx/bin:$PATH
+%post
+    export CPATH=/usr/local/ucx/include:$CPATH
+    export LD_LIBRARY_PATH=/usr/local/ucx/lib:$LD_LIBRARY_PATH
+    export LIBRARY_PATH=/usr/local/ucx/lib:$LIBRARY_PATH
+    export PATH=/usr/local/ucx/bin:$PATH
+
+# MPICH version 4.2.3
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        file \
+        gzip \
+        make \
+        openssh-client \
+        perl \
+        tar \
+        wget
+    rm -rf /var/lib/apt/lists/*
+%post
+    cd /
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://www.mpich.org/static/downloads/4.2.3/mpich-4.2.3.tar.gz
+    mkdir -p /var/tmp && tar -x -f /var/tmp/mpich-4.2.3.tar.gz -C /var/tmp -z
+    cd /var/tmp/mpich-4.2.3 &&   ./configure --prefix=/usr/local/mpich --disable-fortran
+    make -j$(nproc)
+    make -j$(nproc) install
+    rm -rf /var/tmp/mpich-4.2.3 /var/tmp/mpich-4.2.3.tar.gz
+%environment
+    export LD_LIBRARY_PATH=/usr/local/mpich/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/mpich/bin:$PATH
+%post
+    export LD_LIBRARY_PATH=/usr/local/mpich/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/mpich/bin:$PATH
+
+# http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
+%post
+    cd /
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
+    mkdir -p /var/tmp && tar -x -f /var/tmp/osu-micro-benchmarks-7.5.1.tar.gz -C /var/tmp -z
+    cd /var/tmp/osu-micro-benchmarks-7.5.1 &&  CC=mpicc CXX=mpicxx ./configure --prefix=/usr/local/osu
+    make -j$(nproc)
+    make -j$(nproc) install
+    rm -rf /var/tmp/osu-micro-benchmarks-7.5.1 /var/tmp/osu-micro-benchmarks-7.5.1.tar.gz
+
+%environment
+    export PATH=/usr/local/osu/libexec/osu-micro-benchmarks:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/collective:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/one-sided:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/pt2pt:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/startup:$PATH
+%post
+    export PATH=/usr/local/osu/libexec/osu-micro-benchmarks:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/collective:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/one-sided:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/pt2pt:/usr/local/osu/libexec/osu-micro-benchmarks/mpi/startup:$PATH
+
+
