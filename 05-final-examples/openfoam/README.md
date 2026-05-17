@@ -182,7 +182,6 @@ To view the current configuration:
 
 ```bash
 cat elbow/system/controlDict
-
 ```
 
 **Key Parameter Breakdown**
@@ -204,7 +203,7 @@ Since this run executes on a single CPU core, OpenFOAM will solve the full mesh 
 
 ### 4.1 Create the Slurm Submission Script
 
-Create a new file named `run_openfoam_elbow.slurm` in your root case directory:
+Create a new file named `run_openfoam_elbow.sh` in your root case directory:
 
 ```bash
 #!/bin/bash
@@ -212,17 +211,15 @@ Create a new file named `run_openfoam_elbow.slurm` in your root case directory:
 #SBATCH --partition=cpu
 #SBATCH --nodes=1                 # Request 1 physical compute node
 #SBATCH --ntasks=1                # Run strictly on 1 CPU core
-#SBATCH --cpus-per-task=1         # Single hardware thread
 #SBATCH --mem=4G                  # Allocate 4 GB of RAM
-#SBATCH --time=00:30:00           # 30-minute maximum runtime limit
 #SBATCH --output=openfoam_elbow.out   # Standard output log
 #SBATCH --error=openfoam_elbow.err    # Standard error log
 
-# Exit immediately if any command fails
-set -e
-
 # Define container and directory variables
 CASEDIR=$(pwd)/elbow
+
+# Clean previous run 
+for i in {1..100}; do [ -d "elbow/$i" ] && rm -rf "elbow/$i"; done
 
 # Run the OpenFOAM solver inside the container
 apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && icoFoam -case $CASEDIR"
@@ -234,7 +231,7 @@ This script requests a single node with one CPU core and 4 GB of RAM, which is s
 Once your SLURM script is ready, submit it to the cluster:
 
 ```bash
-sbatch run_openfoam_elbow.slurm
+sbatch run_openfoam_elbow.sh
 ```
 
 Do not forget to monitor your job's status using:
@@ -322,6 +319,9 @@ CASEDIR=$(pwd)/elbow
 echo "=========================================="
 echo "OpenFOAM - Elbow Case - triangular grid"
 echo "=========================================="
+
+# Clean previous run 
+for i in {1..100}; do [ -d "elbow/$i" ] && rm -rf "elbow/$i"; done
 
 # Creating mesh for foam format
 apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && fluentMeshToFoam -case $CASEDIR elbow_tri.msh" 
