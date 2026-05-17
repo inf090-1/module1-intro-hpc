@@ -36,11 +36,11 @@ It may take a few minutes to download the image and build the container. Once th
 You can verify that the container is working correctly by running a simple OpenFOAM utility. For example, you can check the help message for the `icoFoam` solver:
 
 ```bash
-apptainer run openfoam.sif 
+srun --pty -p cpu apptainer run openfoam.sif 
 iconFoam -help
 
 # Or in a single command:
-apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && icoFoam -help"
+srun -p cpu apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && icoFoam -help"
 ```
 
 It should display the usage information for the `icoFoam` solver, confirming that OpenFOAM is properly installed and accessible within the container.
@@ -114,7 +114,7 @@ For this test case, we have also included two pre-generated mesh files (`.msh` f
 Before OpenFOAM can solve the Navier-Stokes equations on these grids, the external Gmsh geometry must be translated into OpenFOAM’s native `polyMesh` format. We will use the containerized `gmshToFoam` utility to parse the grid topology and map the physical boundary patches:
 
 ```bash
-apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && fluentMeshToFoam -case elbow elbow_quad.msh" 
+srun -p cpu apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && fluentMeshToFoam -case elbow elbow_quad.msh" 
 ```
 ### 2.3 Verify Mesh Integrity
 
@@ -124,7 +124,7 @@ Before submitting a job to the SLURM queue, you must audit this newly generated 
 
 ```bash
 # Check the mesh
-apptainer exec openfoam.sif  bash -c "source /opt/openfoam6/etc/bashrc && checkMesh -case elbow"
+srun -p cpu apptainer exec openfoam.sif  bash -c "source /opt/openfoam6/etc/bashrc && checkMesh -case elbow"
 ```
 
 Scroll to the bottom of the terminal output and look for this crucial verification block:
@@ -279,36 +279,12 @@ The INF0090 compute nodes do not possess graphical windows or hardware rendering
 
 ### 5.1 Transfer Results to Local Machine
 
-Open a terminal application on your local workstation (not connected via SSH to the cluster) and use `scp` to download your entire data folder. 
+Open a terminal application on your local machine (not connected via SSH to the cluster) and use `scp` to download your entire data folder. Instead of downloading only a few individual files, transfer the entire case directory structure to preserve the necessary time step hierarchies:
 
 ```bash
 # From your local machine:
-scp -r yourUsername@143.106.73.68:<path/to/elbow/> ./openfoam_results/
-```
-
-Here is an improved, clear, and professional rewrite of the post-processing and visualization section.
-
-This version refines the explanation of why data transfer is necessary in HPC workflows, provides concrete commands with explicit placeholders, and aligns the ParaView execution steps with standard engineering terminology.
-
----
-
-## Part 5: Post-Processing and Transient Visualization
-
-Because OpenFOAM saves data as raw matrix text fields, we use **ParaView** to interpolate those fields into 3D visual graphics.
-
-HPC compute nodes do not possess graphical windows or hardware rendering pipelines for interactive interfaces. Therefore, the standard scientific computing workflow requires you to compress and pull the solved data directories down from the cluster to your local graphics workstation for visualization.
-
----
-
-### Step 5.1: Transfer Results to Your Local Workstation
-
-Open a terminal application **on your local workstation** (not connected via SSH to the cluster) and use the Secure Copy Protocol (`scp`) to download your data folder.
-
-Instead of downloading only a few individual files, transfer the entire case directory structure to preserve the necessary time step hierarchies:
-
-```bash
-# Execute this command FROM YOUR LOCAL WORKSTATION terminal:
-scp -r yourUsername@143.106.73.68:/path/to/cluster/scratch/elbow/ ./local_openfoam_results/
+mkdir openfoam_results
+scp -r yourUsername@143.106.73.68:<path/to/elbow/> ./openfoam_results
 ```
 
 ### 5.2 Animate the transient Fluid Flow
@@ -329,7 +305,7 @@ The 3D viewport will cycle through your generated time directories sequentially,
 
 ## Practice: Running the Complete Workflow using a different grid `elbow_tri.sh` 
 
-Now that you have completed the simulation using the fine quadrilateral grid `(elbow_quad.msh`), your final practice is to replicate the process using the coarser triangular alternative: `elbow_tri.msh`. To make this execution efficient, we can combine the entire pre-processing and solving workflow into a single, automated SLURM script `run-elbow-complete.sh`:
+Now that you have completed the simulation using the fine quadrilateral grid `(elbow_quad.msh`), your final practice is to replicate the process using the coarser triangular alternative: `elbow_tri.msh`. To make this execution efficient, we can combine the entire pre-processing and solving workflow into a single, automated SLURM script `run_elbow_complete_tri_mesh.sh`:
 
 ```bash
 #!/bin/bash
@@ -338,8 +314,8 @@ Now that you have completed the simulation using the fine quadrilateral grid `(e
 #SBATCH --nodes=1                # Single node
 #SBATCH --ntasks=1               # 1 processor (core)
 #SBATCH --mem=4G                 # 4 GB RAM
-#SBATCH --output=elbow_tri.out   
-#SBATCH --error=elbow_tri.err
+#SBATCH --output=openfoam_elbow_tri.out   
+#SBATCH --error=openfoam_elbow_tri.err
 
 CASEDIR=$(pwd)/elbow
 
@@ -357,7 +333,7 @@ apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && checkMe
 apptainer exec openfoam.sif bash -c "source /opt/openfoam6/etc/bashrc && icoFoam -case $CASEDIR"
 ```
 
-Submit this script with `sbatch run-elbow-complete.sh` and it will execute the entire workflow for the triangular mesh. After completion, you can transfer the results and visualize them in ParaView to compare with the quadrilateral mesh results.
+Submit this script with `sbatch run_elbow_complete_tri_mesh.sh` and it will execute the entire workflow for the triangular mesh. After completion, you can transfer the results and visualize them in ParaView to compare with the quadrilateral mesh results.
 
 
 ## Further Readings
