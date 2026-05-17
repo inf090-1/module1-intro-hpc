@@ -1,0 +1,12 @@
+**/data
+**/pre
+**/real
+**/rundir
+small-case/input
+*.out
+*.err
+input.zip
+**/wrf-python-1.4.2
+**/venv
+**/wrf-venv
+**/v1.4.2
