@@ -1,0 +1,6 @@
+slurm-magic
+numpy
+wrapt
+xarray
+netCDF4
+Cartopy

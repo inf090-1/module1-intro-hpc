@@ -22,7 +22,7 @@
  truelat1  =  30.0,
  truelat2  =  60.0,
  stand_lon = -75.0,
- geog_data_path = '/shared/WPS_GEOG/'
+ geog_data_path = '/home/shared/WPS_GEOG/'
  opt_geogrid_tbl_path = './'
 /
 
